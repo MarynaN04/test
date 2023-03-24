@@ -1,0 +1,15 @@
+Name, Project, Type
+Yukihiro Matsumoto, Ruby, Programming language
+Wes McKinney, Pandas, Python data analysis library
+Rasmus Lerdorf, PHP, Programming language
+Anders Hejlsberg, Turbo_Pascal, Programming language
+Guido van Rossum, Python, Programming language
+Soumith Chintala, PyTorch, Deep learning framework
+Pauli Virtanen, SciPy, Python library 
+Matt Mullenweg, WordPress, Content management framework
+Mark Shuttleworth, Ubuntu, Linux distribution
+Linus Torvalds, Linux, Operating system kernel
+Larry Wall, Perl, Programming language
+Franois Chollet, Keras, Deep learning framework
+Dries Buytaert, Drupal, Content management framework
+Caoln McNamara, LibreOffice, Office suite 
