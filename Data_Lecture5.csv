@@ -1,0 +1,11 @@
+Country,Age,Salary,Children,Married,Resident,Purchased
+France,44,72000,1,Yes,Yes,No
+Spain,27,48000,0,No,Yes,Yes
+Germany,30,54000,1,Yes,No,No
+Spain,38,61000,2,No,Yes,No
+Germany,40,,3,,,Yes
+France,35,58000,2,Yes,,Yes
+Spain,,52000,1,No,,No
+France,48,79000,,No,Yes,Yes
+Germany,50,83000,,,Yes,No
+France,37,67000,1,Yes,No,Yes
