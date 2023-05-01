@@ -1,0 +1,1235 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "mount_file_id": "1mAM3SptIwjjlRokj_bCjQbtbwP5pBlIV",
+      "authorship_tag": "ABX9TyML9Guzsbsofohvuw7klgHt",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/MarynaN04/test/blob/main/%D0%9F%D0%BE%D1%87%D0%B0%D1%82%D0%BA%D0%BE%D0%B2%D0%B5%20%D0%BD%D0%B0%D0%B1%D0%BB%D0%B8%D0%B6%D0%B5%D0%BD%D0%BD%D1%8F\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "%pip install pyspark\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "NZJGIT4Um1XJ",
+        "outputId": "57c4ba0f-3812-4dcf-801c-244bb2d9071d"
+      },
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Looking in indexes: https://pypi.org/simple, https://us-python.pkg.dev/colab-wheels/public/simple/\n",
+            "Collecting pyspark\n",
+            "  Downloading pyspark-3.4.0.tar.gz (310.8 MB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m310.8/310.8 MB\u001b[0m \u001b[31m5.1 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25h  Preparing metadata (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "Requirement already satisfied: py4j==0.10.9.7 in /usr/local/lib/python3.10/dist-packages (from pyspark) (0.10.9.7)\n",
+            "Building wheels for collected packages: pyspark\n",
+            "  Building wheel for pyspark (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "  Created wheel for pyspark: filename=pyspark-3.4.0-py2.py3-none-any.whl size=311317145 sha256=548fd23fa67ac997cea4c2cb140c8550dbee02f743344fafa1cf9377670f1161\n",
+            "  Stored in directory: /root/.cache/pip/wheels/7b/1b/4b/3363a1d04368e7ff0d408e57ff57966fcdf00583774e761327\n",
+            "Successfully built pyspark\n",
+            "Installing collected packages: pyspark\n",
+            "Successfully installed pyspark-3.4.0\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "jvlZi9XpnJFC"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 4,
+      "metadata": {
+        "id": "jRVUb1H4mJWi"
+      },
+      "outputs": [],
+      "source": [
+        "import pyspark\n",
+        "from pyspark import SparkConf\n",
+        "from pyspark.sql import SparkSession, Window"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pyspark.sql.types as t\n",
+        "import pyspark.sql.functions as f"
+      ],
+      "metadata": {
+        "id": "4SWZMGqrtHgO"
+      },
+      "execution_count": 5,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# from google.colab import drive\n",
+        "# drive.mount('/content/drive')"
+      ],
+      "metadata": {
+        "id": "FZAU6hmt5dYw"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### Object Spark session"
+      ],
+      "metadata": {
+        "id": "SDlzrEbE5yzT"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "spark_session = (SparkSession.builder\n",
+        "                              .master(\"local\")\n",
+        "                              .appName(\"task app\")\n",
+        "                              .config(conf=SparkConf())\n",
+        "                              .getOrCreate())"
+      ],
+      "metadata": {
+        "id": "h1TTFhej5M5I"
+      },
+      "execution_count": 8,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### RDD"
+      ],
+      "metadata": {
+        "id": "Ko7EDf0jsS9g"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "data =   [1,2,3,4]"
+      ],
+      "metadata": {
+        "id": "rZHsZyO7rIRP"
+      },
+      "execution_count": 7,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "rdd=spark_session.sparkContext.parallelize(data)\n"
+      ],
+      "metadata": {
+        "id": "jgcB9gooss20"
+      },
+      "execution_count": 8,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## DataFrame"
+      ],
+      "metadata": {
+        "id": "hEY69RHsvVso"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "data = [(\"Maryna\", 25), (\"Nina\", 45)]\n",
+        "schema = t.StructType([\n",
+        "      t.StructField(\"name\",t.StringType(),True),\n",
+        "      t.StructField(\"age\", t.IntegerType(),True)])\n",
+        "df = spark_session.createDataFrame(data,schema)\n",
+        "df.show()\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Wq-VPK29tZmk",
+        "outputId": "0efb9e09-0871-47ca-cee2-5a39d7d562c3"
+      },
+      "execution_count": 10,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+------+---+\n",
+            "|  name|age|\n",
+            "+------+---+\n",
+            "|Maryna| 25|\n",
+            "|  Nina| 45|\n",
+            "+------+---+\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Schema"
+      ],
+      "metadata": {
+        "id": "BhMX89-qyP8A"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df.printSchema() #non action: do not requare to run Pipeline"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "r0-cInRDyYNk",
+        "outputId": "64ad1abc-40fa-46f9-819d-e6877a8fa8a7"
+      },
+      "execution_count": 11,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "root\n",
+            " |-- name: string (nullable = true)\n",
+            " |-- age: integer (nullable = true)\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "path = '/content/drive/MyDrive/Colab_Notebooks/Data.csv'\n",
+        "from_csv_df = spark_session.read.csv(path)\n",
+        "from_csv_df.show()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "8kW2TUfZ1q48",
+        "outputId": "59eb0efd-1dda-47ff-f9e7-8baf1107e865"
+      },
+      "execution_count": 12,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+-------+----+------+---------+\n",
+            "|    _c0| _c1|   _c2|      _c3|\n",
+            "+-------+----+------+---------+\n",
+            "|Country| Age|Salary|Purchased|\n",
+            "| France|  44| 72000|       No|\n",
+            "|  Spain|  27| 48000|      Yes|\n",
+            "|Germany|  30| 54000|       No|\n",
+            "|  Spain|  38| 61000|       No|\n",
+            "|Germany|  40|  null|      Yes|\n",
+            "| France|  35| 58000|      Yes|\n",
+            "|  Spain|null| 52000|       No|\n",
+            "| France|  48| 79000|      Yes|\n",
+            "|Germany|  50| 83000|       No|\n",
+            "| France|  37| 67000|      Yes|\n",
+            "+-------+----+------+---------+\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## explain()"
+      ],
+      "metadata": {
+        "id": "0lxcVGQs6bw8"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df.explain(mode='extended')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "0Qd4oNLz6Vh8",
+        "outputId": "8a07d2d0-00b9-4de9-c4d0-f162dea800b3"
+      },
+      "execution_count": 9,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "== Parsed Logical Plan ==\n",
+            "LogicalRDD [name#0, age#1], false\n",
+            "\n",
+            "== Analyzed Logical Plan ==\n",
+            "name: string, age: int\n",
+            "LogicalRDD [name#0, age#1], false\n",
+            "\n",
+            "== Optimized Logical Plan ==\n",
+            "LogicalRDD [name#0, age#1], false\n",
+            "\n",
+            "== Physical Plan ==\n",
+            "*(1) Scan ExistingRDD[name#0,age#1]\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from_csv_df.explain(mode='extended')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "_eclkDPp6M4u",
+        "outputId": "b897285c-baa0-44c3-9385-624997178ab2"
+      },
+      "execution_count": 10,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "== Parsed Logical Plan ==\n",
+            "Relation [_c0#30,_c1#31,_c2#32,_c3#33] csv\n",
+            "\n",
+            "== Analyzed Logical Plan ==\n",
+            "_c0: string, _c1: string, _c2: string, _c3: string\n",
+            "Relation [_c0#30,_c1#31,_c2#32,_c3#33] csv\n",
+            "\n",
+            "== Optimized Logical Plan ==\n",
+            "Relation [_c0#30,_c1#31,_c2#32,_c3#33] csv\n",
+            "\n",
+            "== Physical Plan ==\n",
+            "FileScan csv [_c0#30,_c1#31,_c2#32,_c3#33] Batched: false, DataFilters: [], Format: CSV, Location: InMemoryFileIndex(1 paths)[file:/content/drive/MyDrive/Colab_Notebooks/Data.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<_c0:string,_c1:string,_c2:string,_c3:string>\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### Read.csv()"
+      ],
+      "metadata": {
+        "id": "enzSyXji7Nk_"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from_csv_df.printSchema()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "2IRKvRvZ6Moh",
+        "outputId": "6fc47623-a14c-4d91-be7a-bda3f00bb0ed"
+      },
+      "execution_count": 11,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "root\n",
+            " |-- _c0: string (nullable = true)\n",
+            " |-- _c1: string (nullable = true)\n",
+            " |-- _c2: string (nullable = true)\n",
+            " |-- _c3: string (nullable = true)\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from_csv_header_df = spark_session.read.csv(path, header = True, nullValue='null')\n",
+        "from_csv_header_df.show()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ZnR2df0d9mmx",
+        "outputId": "960c4f00-9d12-44e0-81e4-19305a8c150e"
+      },
+      "execution_count": 12,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+-------+----+------+---------+\n",
+            "|Country| Age|Salary|Purchased|\n",
+            "+-------+----+------+---------+\n",
+            "| France|  44| 72000|       No|\n",
+            "|  Spain|  27| 48000|      Yes|\n",
+            "|Germany|  30| 54000|       No|\n",
+            "|  Spain|  38| 61000|       No|\n",
+            "|Germany|  40|  null|      Yes|\n",
+            "| France|  35| 58000|      Yes|\n",
+            "|  Spain|null| 52000|       No|\n",
+            "| France|  48| 79000|      Yes|\n",
+            "|Germany|  50| 83000|       No|\n",
+            "| France|  37| 67000|      Yes|\n",
+            "+-------+----+------+---------+\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "path_name = '/content/drive/MyDrive/Colab_Notebooks/name.basics.tsv.gz'\n",
+        "from_tsv_df_name = spark_session.read.csv(path_name, sep=r'\\t', header=True)\n",
+        "from_tsv_df_name.show()\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "AgHmWo_HJVRC",
+        "outputId": "4790fe12-434b-4153-8ba9-e607e77d642a"
+      },
+      "execution_count": 13,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+---------+-------------------+---------+---------+--------------------+--------------------+\n",
+            "|   nconst|        primaryName|birthYear|deathYear|   primaryProfession|      knownForTitles|\n",
+            "+---------+-------------------+---------+---------+--------------------+--------------------+\n",
+            "|nm0000001|       Fred Astaire|     1899|     1987|soundtrack,actor,...|tt0072308,tt00531...|\n",
+            "|nm0000002|      Lauren Bacall|     1924|     2014|  actress,soundtrack|tt0075213,tt00373...|\n",
+            "|nm0000003|    Brigitte Bardot|     1934|       \\N|actress,soundtrac...|tt0054452,tt00564...|\n",
+            "|nm0000004|       John Belushi|     1949|     1982|actor,soundtrack,...|tt0078723,tt00804...|\n",
+            "|nm0000005|     Ingmar Bergman|     1918|     2007|writer,director,a...|tt0050986,tt00839...|\n",
+            "|nm0000006|     Ingrid Bergman|     1915|     1982|actress,soundtrac...|tt0038109,tt00368...|\n",
+            "|nm0000007|    Humphrey Bogart|     1899|     1957|actor,soundtrack,...|tt0042593,tt00432...|\n",
+            "|nm0000008|      Marlon Brando|     1924|     2004|actor,soundtrack,...|tt0068646,tt00472...|\n",
+            "|nm0000009|     Richard Burton|     1925|     1984|actor,soundtrack,...|tt0061184,tt00878...|\n",
+            "|nm0000010|       James Cagney|     1899|     1986|actor,soundtrack,...|tt0031867,tt00298...|\n",
+            "|nm0000011|        Gary Cooper|     1901|     1961|actor,soundtrack,...|tt0027996,tt00447...|\n",
+            "|nm0000012|        Bette Davis|     1908|     1989|actress,soundtrac...|tt0031210,tt00566...|\n",
+            "|nm0000013|          Doris Day|     1922|     2019|soundtrack,actres...|tt0049470,tt00483...|\n",
+            "|nm0000014|Olivia de Havilland|     1916|     2020|  actress,soundtrack|tt0031381,tt00298...|\n",
+            "|nm0000015|         James Dean|     1931|     1955| actor,miscellaneous|tt0049261,tt00485...|\n",
+            "|nm0000016|    Georges Delerue|     1925|     1992|composer,soundtra...|tt0091763,tt00963...|\n",
+            "|nm0000017|   Marlene Dietrich|     1901|     1992|soundtrack,actres...|tt0052311,tt00512...|\n",
+            "|nm0000018|       Kirk Douglas|     1916|     2020|actor,producer,so...|tt0049456,tt00433...|\n",
+            "|nm0000019|   Federico Fellini|     1920|     1993|writer,director,a...|tt0050783,tt00475...|\n",
+            "|nm0000020|        Henry Fonda|     1905|     1982|actor,producer,so...|tt0050083,tt00325...|\n",
+            "+---------+-------------------+---------+---------+--------------------+--------------------+\n",
+            "only showing top 20 rows\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from_tsv_df_name.printSchema()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "fO2TP2veLq-B",
+        "outputId": "e98eaf23-7d8a-46a3-ade4-4814433eaa6c"
+      },
+      "execution_count": 14,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "root\n",
+            " |-- nconst: string (nullable = true)\n",
+            " |-- primaryName: string (nullable = true)\n",
+            " |-- birthYear: string (nullable = true)\n",
+            " |-- deathYear: string (nullable = true)\n",
+            " |-- primaryProfession: string (nullable = true)\n",
+            " |-- knownForTitles: string (nullable = true)\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### Schema design"
+      ],
+      "metadata": {
+        "id": "fyGIEXLplrgP"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from_tsv_df_name_schema = t.StructType([t.StructField(\"nconst\",t.StringType(),True),\n",
+        "                                        t.StructField(\"primaryName\", t.StringType(),True),\n",
+        "                                        t.StructField(\"birthYear\", t.IntegerType(),True),\n",
+        "                                        t.StructField(\"deathYear\", t.IntegerType(),True),\n",
+        "                                        t.StructField(\"primaryProfession\", t.StringType(),True),\n",
+        "                                        t.StructField(\"knownForTitles\", t.StringType(),True)])                                  \n",
+        "  \n",
+        "from_tsv_df_name = spark_session.read.csv(path_name, \n",
+        "                                          sep=r'\\t', \n",
+        "                                          header=True,\n",
+        "                                          nullValue = '\\\\N',\n",
+        "                                          schema = from_tsv_df_name_schema)\n",
+        "from_tsv_df_name.show()\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "HgpjZlP_llRP",
+        "outputId": "233f8436-8977-4e70-a370-835771d5a501"
+      },
+      "execution_count": 15,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+---------+-------------------+---------+---------+--------------------+--------------------+\n",
+            "|   nconst|        primaryName|birthYear|deathYear|   primaryProfession|      knownForTitles|\n",
+            "+---------+-------------------+---------+---------+--------------------+--------------------+\n",
+            "|nm0000001|       Fred Astaire|     1899|     1987|soundtrack,actor,...|tt0072308,tt00531...|\n",
+            "|nm0000002|      Lauren Bacall|     1924|     2014|  actress,soundtrack|tt0075213,tt00373...|\n",
+            "|nm0000003|    Brigitte Bardot|     1934|     null|actress,soundtrac...|tt0054452,tt00564...|\n",
+            "|nm0000004|       John Belushi|     1949|     1982|actor,soundtrack,...|tt0078723,tt00804...|\n",
+            "|nm0000005|     Ingmar Bergman|     1918|     2007|writer,director,a...|tt0050986,tt00839...|\n",
+            "|nm0000006|     Ingrid Bergman|     1915|     1982|actress,soundtrac...|tt0038109,tt00368...|\n",
+            "|nm0000007|    Humphrey Bogart|     1899|     1957|actor,soundtrack,...|tt0042593,tt00432...|\n",
+            "|nm0000008|      Marlon Brando|     1924|     2004|actor,soundtrack,...|tt0068646,tt00472...|\n",
+            "|nm0000009|     Richard Burton|     1925|     1984|actor,soundtrack,...|tt0061184,tt00878...|\n",
+            "|nm0000010|       James Cagney|     1899|     1986|actor,soundtrack,...|tt0031867,tt00298...|\n",
+            "|nm0000011|        Gary Cooper|     1901|     1961|actor,soundtrack,...|tt0027996,tt00447...|\n",
+            "|nm0000012|        Bette Davis|     1908|     1989|actress,soundtrac...|tt0031210,tt00566...|\n",
+            "|nm0000013|          Doris Day|     1922|     2019|soundtrack,actres...|tt0049470,tt00483...|\n",
+            "|nm0000014|Olivia de Havilland|     1916|     2020|  actress,soundtrack|tt0031381,tt00298...|\n",
+            "|nm0000015|         James Dean|     1931|     1955| actor,miscellaneous|tt0049261,tt00485...|\n",
+            "|nm0000016|    Georges Delerue|     1925|     1992|composer,soundtra...|tt0091763,tt00963...|\n",
+            "|nm0000017|   Marlene Dietrich|     1901|     1992|soundtrack,actres...|tt0052311,tt00512...|\n",
+            "|nm0000018|       Kirk Douglas|     1916|     2020|actor,producer,so...|tt0049456,tt00433...|\n",
+            "|nm0000019|   Federico Fellini|     1920|     1993|writer,director,a...|tt0050783,tt00475...|\n",
+            "|nm0000020|        Henry Fonda|     1905|     1982|actor,producer,so...|tt0050083,tt00325...|\n",
+            "+---------+-------------------+---------+---------+--------------------+--------------------+\n",
+            "only showing top 20 rows\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from_tsv_df_name.printSchema()\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "XJ7HIXGMoWOU",
+        "outputId": "6b957438-a661-4f61-efa8-7fb0dba70c5b"
+      },
+      "execution_count": 16,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "root\n",
+            " |-- nconst: string (nullable = true)\n",
+            " |-- primaryName: string (nullable = true)\n",
+            " |-- birthYear: integer (nullable = true)\n",
+            " |-- deathYear: integer (nullable = true)\n",
+            " |-- primaryProfession: string (nullable = true)\n",
+            " |-- knownForTitles: string (nullable = true)\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### Write (Too big)"
+      ],
+      "metadata": {
+        "id": "yEf_ddZApeVw"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "first_100_from_tsv_df_name=from_tsv_df_name.limit(5)\n",
+        "path_name_to_save = '/content/drive/MyDrive/Colab_Notebooks/name_to_save'\n",
+        "from_tsv_df_name.write.csv(path_name_to_save, header=True, mode = \"overwrite\")\n"
+      ],
+      "metadata": {
+        "id": "NS1VOnOhpi7l"
+      },
+      "execution_count": 16,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### Inspecting Df"
+      ],
+      "metadata": {
+        "id": "h_DNmgL7uEbR"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from_tsv_df_name.show(50, truncate = False)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "95CRnFt8uMod",
+        "outputId": "8e9c7dd2-1933-4308-9358-203c4c4c06c7"
+      },
+      "execution_count": 17,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+---------+-------------------+---------+---------+-------------------------------------+---------------------------------------+\n",
+            "|nconst   |primaryName        |birthYear|deathYear|primaryProfession                    |knownForTitles                         |\n",
+            "+---------+-------------------+---------+---------+-------------------------------------+---------------------------------------+\n",
+            "|nm0000001|Fred Astaire       |1899     |1987     |soundtrack,actor,miscellaneous       |tt0072308,tt0053137,tt0050419,tt0045537|\n",
+            "|nm0000002|Lauren Bacall      |1924     |2014     |actress,soundtrack                   |tt0075213,tt0037382,tt0117057,tt0038355|\n",
+            "|nm0000003|Brigitte Bardot    |1934     |null     |actress,soundtrack,music_department  |tt0054452,tt0056404,tt0057345,tt0049189|\n",
+            "|nm0000004|John Belushi       |1949     |1982     |actor,soundtrack,writer              |tt0078723,tt0080455,tt0077975,tt0072562|\n",
+            "|nm0000005|Ingmar Bergman     |1918     |2007     |writer,director,actor                |tt0050986,tt0083922,tt0069467,tt0060827|\n",
+            "|nm0000006|Ingrid Bergman     |1915     |1982     |actress,soundtrack,producer          |tt0038109,tt0036855,tt0038787,tt0034583|\n",
+            "|nm0000007|Humphrey Bogart    |1899     |1957     |actor,soundtrack,producer            |tt0042593,tt0043265,tt0034583,tt0037382|\n",
+            "|nm0000008|Marlon Brando      |1924     |2004     |actor,soundtrack,director            |tt0068646,tt0047296,tt0070849,tt0078788|\n",
+            "|nm0000009|Richard Burton     |1925     |1984     |actor,soundtrack,producer            |tt0061184,tt0087803,tt0057877,tt0059749|\n",
+            "|nm0000010|James Cagney       |1899     |1986     |actor,soundtrack,director            |tt0031867,tt0029870,tt0042041,tt0035575|\n",
+            "|nm0000011|Gary Cooper        |1901     |1961     |actor,soundtrack,stunts              |tt0027996,tt0044706,tt0035896,tt0034167|\n",
+            "|nm0000012|Bette Davis        |1908     |1989     |actress,soundtrack,make_up_department|tt0031210,tt0056687,tt0042192,tt0035140|\n",
+            "|nm0000013|Doris Day          |1922     |2019     |soundtrack,actress,producer          |tt0049470,tt0048317,tt0045591,tt0053172|\n",
+            "|nm0000014|Olivia de Havilland|1916     |2020     |actress,soundtrack                   |tt0031381,tt0029843,tt0040806,tt0041452|\n",
+            "|nm0000015|James Dean         |1931     |1955     |actor,miscellaneous                  |tt0049261,tt0048545,tt0048028,tt0044245|\n",
+            "|nm0000016|Georges Delerue    |1925     |1992     |composer,soundtrack,music_department |tt0091763,tt0096320,tt0069946,tt8847712|\n",
+            "|nm0000017|Marlene Dietrich   |1901     |1992     |soundtrack,actress,music_department  |tt0052311,tt0051201,tt0021156,tt0055031|\n",
+            "|nm0000018|Kirk Douglas       |1916     |2020     |actor,producer,soundtrack            |tt0049456,tt0043338,tt0050825,tt0054331|\n",
+            "|nm0000019|Federico Fellini   |1920     |1993     |writer,director,actor                |tt0050783,tt0047528,tt0056801,tt0071129|\n",
+            "|nm0000020|Henry Fonda        |1905     |1982     |actor,producer,soundtrack            |tt0050083,tt0032551,tt0051207,tt0082846|\n",
+            "|nm0000021|Joan Fontaine      |1917     |2013     |actress,soundtrack,producer          |tt0032976,tt0035751,tt0034248,tt0040536|\n",
+            "|nm0000022|Clark Gable        |1901     |1960     |actor,soundtrack,producer            |tt0025316,tt0026752,tt0031381,tt0023382|\n",
+            "|nm0000023|Judy Garland       |1922     |1969     |soundtrack,actress                   |tt0047522,tt0037059,tt0055031,tt0032138|\n",
+            "|nm0000024|John Gielgud       |1904     |2000     |actor,writer,director                |tt0045943,tt0082031,tt0071877,tt0117631|\n",
+            "|nm0000025|Jerry Goldsmith    |1929     |2004     |music_department,soundtrack,composer |tt0117731,tt0112715,tt0077269,tt0119488|\n",
+            "|nm0000026|Cary Grant         |1904     |1986     |actor,soundtrack,producer            |tt0053125,tt0038787,tt0034248,tt0056923|\n",
+            "|nm0000027|Alec Guinness      |1914     |2000     |actor,soundtrack,writer              |tt0041546,tt0051739,tt0076759,tt0050212|\n",
+            "|nm0000028|Rita Hayworth      |1918     |1987     |actress,soundtrack,producer          |tt0040525,tt0038559,tt0035103,tt0036723|\n",
+            "|nm0000029|Margaux Hemingway  |1954     |1996     |actress,miscellaneous                |tt0074802,tt0077800,tt0102122,tt0110138|\n",
+            "|nm0000030|Audrey Hepburn     |1929     |1993     |actress,soundtrack                   |tt0046250,tt0054698,tt0056923,tt0058385|\n",
+            "|nm0000031|Katharine Hepburn  |1907     |2003     |actress,soundtrack,writer            |tt0063227,tt0043265,tt0032904,tt0082846|\n",
+            "|nm0000032|Charlton Heston    |1923     |2008     |actor,director,writer                |tt0052618,tt0049833,tt0070723,tt0067525|\n",
+            "|nm0000033|Alfred Hitchcock   |1899     |1980     |director,producer,writer             |tt0054215,tt0056869,tt0052357,tt0053125|\n",
+            "|nm0000034|William Holden     |1918     |1981     |actor,soundtrack,miscellaneous       |tt0046359,tt0047437,tt0043014,tt0074958|\n",
+            "|nm0000035|James Horner       |1953     |2015     |music_department,soundtrack,composer |tt0120338,tt0090633,tt0499549,tt0120746|\n",
+            "|nm0000036|Buster Keaton      |1895     |1966     |actor,writer,director                |tt0015324,tt0017925,tt0019421,tt0016332|\n",
+            "|nm0000037|Gene Kelly         |1912     |1996     |soundtrack,actor,miscellaneous       |tt0045152,tt0041716,tt0043278,tt0053946|\n",
+            "|nm0000038|Grace Kelly        |1929     |1982     |actress,soundtrack,producer          |tt0046912,tt0048728,tt0046874,tt0047396|\n",
+            "|nm0000039|Deborah Kerr       |1921     |2007     |actress,soundtrack                   |tt0049408,tt0045793,tt0039192,tt0050105|\n",
+            "|nm0000040|Stanley Kubrick    |1928     |1999     |director,writer,producer             |tt0072684,tt0093058,tt0066921,tt0062622|\n",
+            "|nm0000041|Akira Kurosawa     |1910     |1998     |writer,director,assistant_director   |tt0047478,tt0089881,tt0080979,tt0051808|\n",
+            "|nm0000042|Alan Ladd          |1913     |1964     |actor,producer,camera_department     |tt0046303,tt0035432,tt0038369,tt0039056|\n",
+            "|nm0000043|Veronica Lake      |1922     |1973     |actress,soundtrack,producer          |tt0038369,tt0034240,tt0034881,tt0035432|\n",
+            "|nm0000044|Burt Lancaster     |1913     |1994     |actor,producer,soundtrack            |tt0053793,tt0051036,tt0055031,tt0045793|\n",
+            "|nm0000045|Bruce Lee          |1940     |1973     |actor,writer,miscellaneous           |tt0067824,tt0070034,tt0068767,tt0068935|\n",
+            "|nm0000046|Vivien Leigh       |1913     |1967     |actress,soundtrack,writer            |tt0044081,tt0031381,tt0034272,tt0033238|\n",
+            "|nm0000047|Sophia Loren       |1934     |null     |actress,soundtrack                   |tt0060121,tt0058335,tt0076085,tt0054749|\n",
+            "|nm0000048|Peter Lorre        |1904     |1964     |actor,soundtrack,writer              |tt0022100,tt0036613,tt0034583,tt0033870|\n",
+            "|nm0000049|Henry Mancini      |1924     |1994     |music_department,soundtrack,composer |tt0085101,tt0383216,tt0054698,tt0057413|\n",
+            "|nm0000050|Groucho Marx       |1890     |1977     |soundtrack,actor,writer              |tt0019777,tt0023969,tt0026778,tt0028772|\n",
+            "+---------+-------------------+---------+---------+-------------------------------------+---------------------------------------+\n",
+            "only showing top 50 rows\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "dir(from_tsv_df_name)"
+      ],
+      "metadata": {
+        "id": "02SQ8ohkvaGM"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "from_tsv_df_name.count()\n"
+      ],
+      "metadata": {
+        "id": "EN7eKXAiwxas"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from_tsv_df_name.count()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "_FrQA9v-w1DH",
+        "outputId": "18e5a299-5e36-4a15-f022-ff07b121f4bb"
+      },
+      "execution_count": 17,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "12480369"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 17
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### Statistics"
+      ],
+      "metadata": {
+        "id": "wyRZly89DoLw"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from_tsv_df_name.describe().show()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "iwAxgtYt7ynW",
+        "outputId": "ef4f16a0-e381-4efc-c7f0-6eeb723f6214"
+      },
+      "execution_count": 22,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+-------+---------+--------------------+-----------------+------------------+--------------------+-------------------+\n",
+            "|summary|   nconst|         primaryName|        birthYear|         deathYear|   primaryProfession|     knownForTitles|\n",
+            "+-------+---------+--------------------+-----------------+------------------+--------------------+-------------------+\n",
+            "|  count| 12480369|            12480369|           576820|            214293|             9762220|           10304046|\n",
+            "|   mean|     null|                 NaN|1952.439114455116|1992.1105775736958|                null|               null|\n",
+            "| stddev|     null|                 NaN|34.96557291034189| 34.60940265884891|                null|               null|\n",
+            "|    min|nm0000001|!'aru Ikhuisi Pie...|                1|                17|               actor|tt0000001,tt0057728|\n",
+            "|    max|nm9993719|  ﻿Thesia Kouloungou|             2023|              2023|writer,visual_eff...|          tt9916856|\n",
+            "+-------+---------+--------------------+-----------------+------------------+--------------------+-------------------+\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### On Column"
+      ],
+      "metadata": {
+        "id": "6sviYQ6jEfug"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from_tsv_df_name.select('birthYear').describe().show()\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "tYIeI-CKFOHB",
+        "outputId": "4d636503-a729-4340-ee59-395b609c10a7"
+      },
+      "execution_count": 19,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+-------+-----------------+\n",
+            "|summary|        birthYear|\n",
+            "+-------+-----------------+\n",
+            "|  count|           576820|\n",
+            "|   mean|1952.439114455116|\n",
+            "| stddev|34.96557291034189|\n",
+            "|    min|                1|\n",
+            "|    max|             2023|\n",
+            "+-------+-----------------+\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Get the list of people’s names, who were born in the 19th century."
+      ],
+      "metadata": {
+        "id": "uWynW5AuH5ab"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from_tsv_df_name.filter((from_tsv_df_name.birthYear >= 1900) & (from_tsv_df_name.birthYear <= 1999)).show() # select( 'primaryName','birthYear')."
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "YKBesYBQIAxe",
+        "outputId": "20f0f321-bbff-4683-c141-4ca7da18dd72"
+      },
+      "execution_count": 20,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+---------+-------------------+---------+---------+--------------------+--------------------+\n",
+            "|   nconst|        primaryName|birthYear|deathYear|   primaryProfession|      knownForTitles|\n",
+            "+---------+-------------------+---------+---------+--------------------+--------------------+\n",
+            "|nm0000002|      Lauren Bacall|     1924|     2014|  actress,soundtrack|tt0075213,tt00373...|\n",
+            "|nm0000003|    Brigitte Bardot|     1934|     null|actress,soundtrac...|tt0054452,tt00564...|\n",
+            "|nm0000004|       John Belushi|     1949|     1982|actor,soundtrack,...|tt0078723,tt00804...|\n",
+            "|nm0000005|     Ingmar Bergman|     1918|     2007|writer,director,a...|tt0050986,tt00839...|\n",
+            "|nm0000006|     Ingrid Bergman|     1915|     1982|actress,soundtrac...|tt0038109,tt00368...|\n",
+            "|nm0000008|      Marlon Brando|     1924|     2004|actor,soundtrack,...|tt0068646,tt00472...|\n",
+            "|nm0000009|     Richard Burton|     1925|     1984|actor,soundtrack,...|tt0061184,tt00878...|\n",
+            "|nm0000011|        Gary Cooper|     1901|     1961|actor,soundtrack,...|tt0027996,tt00447...|\n",
+            "|nm0000012|        Bette Davis|     1908|     1989|actress,soundtrac...|tt0031210,tt00566...|\n",
+            "|nm0000013|          Doris Day|     1922|     2019|soundtrack,actres...|tt0049470,tt00483...|\n",
+            "|nm0000014|Olivia de Havilland|     1916|     2020|  actress,soundtrack|tt0031381,tt00298...|\n",
+            "|nm0000015|         James Dean|     1931|     1955| actor,miscellaneous|tt0049261,tt00485...|\n",
+            "|nm0000016|    Georges Delerue|     1925|     1992|composer,soundtra...|tt0091763,tt00963...|\n",
+            "|nm0000017|   Marlene Dietrich|     1901|     1992|soundtrack,actres...|tt0052311,tt00512...|\n",
+            "|nm0000018|       Kirk Douglas|     1916|     2020|actor,producer,so...|tt0049456,tt00433...|\n",
+            "|nm0000019|   Federico Fellini|     1920|     1993|writer,director,a...|tt0050783,tt00475...|\n",
+            "|nm0000020|        Henry Fonda|     1905|     1982|actor,producer,so...|tt0050083,tt00325...|\n",
+            "|nm0000021|      Joan Fontaine|     1917|     2013|actress,soundtrac...|tt0032976,tt00357...|\n",
+            "|nm0000022|        Clark Gable|     1901|     1960|actor,soundtrack,...|tt0025316,tt00267...|\n",
+            "|nm0000023|       Judy Garland|     1922|     1969|  soundtrack,actress|tt0047522,tt00370...|\n",
+            "+---------+-------------------+---------+---------+--------------------+--------------------+\n",
+            "only showing top 20 rows\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from_tsv_df_name.filter((from_tsv_df_name.birthYear >= 1900) & (from_tsv_df_name.birthYear <= 1999)).select( 'primaryName','birthYear').show()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "H6Kee7CkLNoe",
+        "outputId": "e1467896-c833-446f-96c1-32892607bdcc"
+      },
+      "execution_count": 21,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+-------------------+---------+\n",
+            "|        primaryName|birthYear|\n",
+            "+-------------------+---------+\n",
+            "|      Lauren Bacall|     1924|\n",
+            "|    Brigitte Bardot|     1934|\n",
+            "|       John Belushi|     1949|\n",
+            "|     Ingmar Bergman|     1918|\n",
+            "|     Ingrid Bergman|     1915|\n",
+            "|      Marlon Brando|     1924|\n",
+            "|     Richard Burton|     1925|\n",
+            "|        Gary Cooper|     1901|\n",
+            "|        Bette Davis|     1908|\n",
+            "|          Doris Day|     1922|\n",
+            "|Olivia de Havilland|     1916|\n",
+            "|         James Dean|     1931|\n",
+            "|    Georges Delerue|     1925|\n",
+            "|   Marlene Dietrich|     1901|\n",
+            "|       Kirk Douglas|     1916|\n",
+            "|   Federico Fellini|     1920|\n",
+            "|        Henry Fonda|     1905|\n",
+            "|      Joan Fontaine|     1917|\n",
+            "|        Clark Gable|     1901|\n",
+            "|       Judy Garland|     1922|\n",
+            "+-------------------+---------+\n",
+            "only showing top 20 rows\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### title.akas.tsv.gz - Contains the following information for titles:\n",
+        "\n",
+        "\n",
+        "*   **titleId(string)** - a tconst, an alphanumeric unique identifier of the title\n",
+        "*   **ordering (integer)** – a number to uniquely identify rows for a given titleId\n",
+        "*   **title (string)** – the localized title\n",
+        "region (string) - the region for this version of the title\n",
+        "*  **language (string)** - the language of the title \n",
+        "*  **types (array)** - Enumerated set of attributes for this alternative title. One or more of the following: \"alternative\", \"dvd\", \"festival\", \"tv\", \"video\", \"working\", \"original\", \"imdbDisplay\". New values may be added in the future without warning\n",
+        "*  **attributes (array)** - Additional terms to describe this alternative title, not enumerated \n",
+        "*  **isOriginalTitle (boolean)** – 0: not original title; 1: original titleList item\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "goIHSThH6xxP"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# to columns.py from title.akas.tsv.gz\n",
+        "titleId = 'titleId' \n",
+        "ordering = 'ordering' \n",
+        "title = 'title'\n",
+        "region = 'region'\n",
+        "language ='language'\n",
+        "types = 'types'\n",
+        "attributes = 'attributes'\n",
+        "isOriginalTitle = 'isOriginalTitle' "
+      ],
+      "metadata": {
+        "id": "TdPXnPV8A-Nu"
+      },
+      "execution_count": 21,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [],
+      "metadata": {
+        "id": "0oGq-o2zCFDI"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from_tsv_df_title_akas_schema = t.StructType([t.StructField(\"titleld\",t.StringType(),True),\n",
+        "                                        t.StructField(\"ordering\", t.IntegerType(),True),\n",
+        "                                        t.StructField(\"title\", t.StringType(),True),\n",
+        "                                        t.StructField(\"language\", t.StringType(),True),\n",
+        "                                       # t.StructField(\"types\", t.ArrayType(t.StringType()),True),\n",
+        "                                       # t.StructField(\"attributes\", t.ArrayType(t.StringType()),True),\n",
+        "                                        t.StructField(\"types\", t.StringType(),True),\n",
+        "                                        t.StructField(\"attributes\", t.StringType(),True),\n",
+        "                                        t.StructField(\"isOriginalTitle\", t.BooleanType(),True)])                                  \n",
+        "  \n",
+        "path_tsv_df_title_akas = '/content/drive/MyDrive/Colab_Notebooks/title.akas.tsv.gz'\n",
+        "from_tsv_df_title_akas = spark_session.read.csv(path_tsv_df_title_akas, \n",
+        "                                          sep=r'\\t', \n",
+        "                                          header=True,\n",
+        "                                          nullValue = '\\\\N',\n",
+        "                                          schema = from_tsv_df_title_akas_schema)\n",
+        "from_tsv_df_title_akas.show(30, truncate = False)\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "51fd241b-7f62-47dc-afc6-fd1c663bf512",
+        "id": "45B5_2Yo8kcz"
+      },
+      "execution_count": 26,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+---------+--------+-------------------------+--------+-----+-----------+---------------+\n",
+            "|titleld  |ordering|title                    |language|types|attributes |isOriginalTitle|\n",
+            "+---------+--------+-------------------------+--------+-----+-----------+---------------+\n",
+            "|tt0000001|1       |Карменсіта               |UA      |null |imdbDisplay|null           |\n",
+            "|tt0000001|2       |Carmencita               |DE      |null |null       |null           |\n",
+            "|tt0000001|3       |Carmencita - spanyol tánc|HU      |null |imdbDisplay|null           |\n",
+            "|tt0000001|4       |Καρμενσίτα               |GR      |null |imdbDisplay|null           |\n",
+            "|tt0000001|5       |Карменсита               |RU      |null |imdbDisplay|null           |\n",
+            "|tt0000001|6       |Carmencita               |US      |null |imdbDisplay|null           |\n",
+            "|tt0000001|7       |Carmencita               |null    |null |original   |null           |\n",
+            "|tt0000001|8       |カルメンチータ           |JP      |ja   |imdbDisplay|null           |\n",
+            "|tt0000002|1       |Le clown et ses chiens   |null    |null |original   |null           |\n",
+            "|tt0000002|2       |Le clown et ses chiens   |FR      |null |imdbDisplay|null           |\n",
+            "|tt0000002|3       |A bohóc és kutyái        |HU      |null |imdbDisplay|null           |\n",
+            "|tt0000002|4       |Der Clown und seine Hunde|DE      |null |null       |null           |\n",
+            "|tt0000002|5       |Clovnul si cainii sai    |RO      |null |imdbDisplay|null           |\n",
+            "|tt0000002|6       |Клоун и его собаки       |RU      |null |imdbDisplay|null           |\n",
+            "|tt0000002|7       |The Clown and His Dogs   |US      |null |null       |null           |\n",
+            "|tt0000002|8       |道化師と犬               |JP      |ja   |imdbDisplay|null           |\n",
+            "|tt0000003|1       |Sarmanul Pierrot         |RO      |null |imdbDisplay|null           |\n",
+            "|tt0000003|2       |Szegény Pierrot          |HU      |null |imdbDisplay|null           |\n",
+            "|tt0000003|3       |哀れなピエロ             |JP      |ja   |imdbDisplay|null           |\n",
+            "|tt0000003|4       |Бідний П'єро             |UA      |null |imdbDisplay|null           |\n",
+            "|tt0000003|5       |Бедный Пьеро             |RU      |null |imdbDisplay|null           |\n",
+            "|tt0000003|6       |Pauvre Pierrot           |null    |null |original   |null           |\n",
+            "|tt0000003|7       |Poor Pierrot             |GB      |null |imdbDisplay|null           |\n",
+            "|tt0000003|8       |Pauvre Pierrot           |FR      |null |imdbDisplay|null           |\n",
+            "|tt0000003|9       |Armer Pierrot            |DE      |null |null       |null           |\n",
+            "|tt0000004|1       |Un bon bock              |null    |null |original   |null           |\n",
+            "|tt0000004|2       |Un bon bock              |FR      |null |imdbDisplay|null           |\n",
+            "|tt0000004|3       |Ein gutes Glas Bier      |DE      |null |null       |null           |\n",
+            "|tt0000004|4       |Un ţap de bere           |RO      |null |imdbDisplay|null           |\n",
+            "|tt0000004|5       |Полная кружка пива       |RU      |null |imdbDisplay|null           |\n",
+            "+---------+--------+-------------------------+--------+-----+-----------+---------------+\n",
+            "only showing top 30 rows\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## 1. Get all titles of series/movies etc. that are available in Ukrainian."
+      ],
+      "metadata": {
+        "id": "pT6PzkEbbvYE"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#UA_title = from_tsv_df_title_akas.filter(from_tsv_df_title_akas.language == 'UA').select( 'title',language).show()\n",
+        "UA_title = from_tsv_df_title_akas.filter(from_tsv_df_title_akas.language == 'UA').select( 'title',language)\n",
+        "print(UA_title)\n",
+        "UA_title.show()\n",
+        "UA_title.count()\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Me9G5110btQN",
+        "outputId": "97d81d55-a1bd-4729-985f-cc951deb0d1e"
+      },
+      "execution_count": 33,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "DataFrame[title: string, language: string]\n",
+            "+--------------------+--------+\n",
+            "|               title|language|\n",
+            "+--------------------+--------+\n",
+            "|          Карменсіта|      UA|\n",
+            "|        Бідний П'єро|      UA|\n",
+            "|    Ковальська сцена|      UA|\n",
+            "|   Чхання Фреда Отта|      UA|\n",
+            "|Вихід робітників ...|      UA|\n",
+            "|Прибуття потяга н...|      UA|\n",
+            "|Прибуття делегаті...|      UA|\n",
+            "| Политий поливальник|      UA|\n",
+            "|     Навколо кабінки|      UA|\n",
+            "|              Ковалі|      UA|\n",
+            "|     Морське купання|      UA|\n",
+            "|      Партія в карти|      UA|\n",
+            "|Площа Кордельє в ...|      UA|\n",
+            "|Виловлювання черв...|      UA|\n",
+            "|  Сніданок немовляти|      UA|\n",
+            "|Стрибок через бре...|      UA|\n",
+            "|       Вольтижування|      UA|\n",
+            "|        Гра в сніжки|      UA|\n",
+            "|    Зруйнування муру|      UA|\n",
+            "|       Замок диявола|      UA|\n",
+            "+--------------------+--------+\n",
+            "only showing top 20 rows\n",
+            "\n"
+          ]
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "25295"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 33
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(UA_title)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "eM5dpUAgdv--",
+        "outputId": "5cbd2e92-a0e7-4b67-a0e1-7331ab59b516"
+      },
+      "execution_count": 30,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "None\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### title.basics.tsv.gz - Contains the following information for titles:\n",
+        "*   tconst (string) - alphanumeric unique identifier of the title\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "titleType (string) – the type/format of the title (e.g. movie, short, tvseries, tvepisode, video, etc)\n",
+        "primaryTitle (string) – the more popular title / the title used by the filmmakers on promotional materials at the point of release\n",
+        "originalTitle (string) - original title, in the original language\n",
+        "isAdult (boolean) - 0: non-adult title; 1: adult title\n",
+        "startYear (YYYY) – represents the release year of a title. In the case of TV Series, it is the series start year\n",
+        "endYear (YYYY) – TV Series end year. ‘\\N’ for all other title types\n",
+        "runtimeMinutes – primary runtime of the title, in minutes\n",
+        "genres (string array) – includes up to three genres associated with the title\n",
+        "title.crew.tsv.gz – Contains the director and writer information for all the titles in IMDb. Fields include:\n",
+        "tconst (string) - alphanumeric unique identifier of the title\n",
+        "directors (array of nconsts) - director(s) of the given title\n",
+        "writers (array of nconsts) – writer(s) of the given title\n",
+        "title.episode.tsv.gz – Contains the tv episode information. Fields include:\n",
+        "tconst (string) - alphanumeric identifier of episode\n",
+        "parentTconst (string) - alphanumeric identifier of the parent TV Series\n",
+        "seasonNumber (integer) – season number the episode belongs to\n",
+        "episodeNumber (integer) – episode number of the tconst in the TV series\n",
+        "title.principals.tsv.gz – Contains the principal cast/crew for titles\n",
+        "tconst (string) - alphanumeric unique identifier of the title\n",
+        "ordering (integer) – a number to uniquely identify rows for a given titleId\n",
+        "nconst (string) - alphanumeric unique identifier of the name/person\n",
+        "category (string) - the category of job that person was in\n",
+        "job (string) - the specific job title if applicable, else '\\N'\n",
+        "characters (string) - the name of the character played if applicable, else '\\N'\n",
+        "title.ratings.tsv.gz – Contains the IMDb rating and votes information for titles\n",
+        "tconst (string) - alphanumeric unique identifier of the title\n",
+        "averageRating – weighted average of all the individual user ratings\n",
+        "numVotes - number of votes the title has received\n",
+        "name.basics.tsv.gz – Contains the following information for names:\n",
+        "nconst (string) - alphanumeric unique identifier of the name/person\n",
+        "primaryName (string)– name by which the person is most often credited\n",
+        "birthYear – in YYYY format\n",
+        "deathYear – in YYYY format if applicable, else '\\N'\n",
+        "primaryProfession (array of strings)– the top-3 professions of the person\n",
+        "knownForTitles (array of tconsts) – titles the person is known for"
+      ],
+      "metadata": {
+        "id": "goRolnfv82JJ"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "m5s1rvrb6xEj"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
